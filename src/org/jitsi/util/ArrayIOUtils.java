@@ -58,7 +58,7 @@ public class ArrayIOUtils
      */
     public static int readInt16(byte[] in, int inOffset)
     {
-        return ((in[inOffset + 1] << 8) | (in[inOffset] & 0xFF));
+        return ((in[inOffset] << 8) | (in[inOffset + 1] & 0xFF));
     }
 
     /**
@@ -112,8 +112,8 @@ public class ArrayIOUtils
      */
     public static void writeInt16(int in, byte[] out, int outOffset)
     {
-        out[outOffset] = (byte) (in & 0xFF);
-        out[outOffset + 1] = (byte) (in >> 8);
+        out[outOffset] = (byte) (in >> 8);
+        out[outOffset + 1] = (byte) (in & 0xFF);
     }
 
     /**
