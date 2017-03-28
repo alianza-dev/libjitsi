@@ -35,7 +35,7 @@ public class WavMediaDevice extends AudioMediaDeviceImpl {
      * The list of <tt>Format</tt>s supported by the <tt>WavMediaDevice</tt> instances.
      */
     protected static final Format[] SUPPORTED_FORMATS = new Format[] {
-            new AudioFormat(AudioFormat.LINEAR, 8000d, 16, 1, -1, AudioFormat.SIGNED)
+            new AudioFormat(AudioFormat.LINEAR, 8000d, 16, 1, AudioFormat.LITTLE_ENDIAN, AudioFormat.SIGNED)
     };
 
     /**
