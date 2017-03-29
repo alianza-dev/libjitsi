@@ -41,6 +41,7 @@ import java.io.IOException;
 public class WavStream extends AbstractPullBufferStream<DataSource> {
 
     protected Wave wave;
+    //NOTE: something about using wavInputStream causes libjitsi to not send RTP even though it reads the bytes just fine and the same as MusicG's Wave
 //    protected AudioInputStream wavInputStream;
 
     /**
@@ -92,7 +93,7 @@ public class WavStream extends AbstractPullBufferStream<DataSource> {
 
         byte[] waveBytes = wave.getBytes();
 //        byte[] wisBytes = IOUtils.readAll(wavInputStream);
-        RTPRecorder.saveBytesToFile(waveBytes, "WavStream.read.waveBytes.raw");
+//        RTPRecorder.saveBytesToFile(waveBytes, "WavStream.read.waveBytes.raw");
 //        RTPRecorder.saveBytesToFile(wisBytes, "WavStream.read.wisBytes.raw");
         buffer.setData(waveBytes);
 //        buffer.setData(wisBytes);
