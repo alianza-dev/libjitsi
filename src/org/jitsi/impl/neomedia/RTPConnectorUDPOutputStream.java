@@ -61,6 +61,12 @@ public class RTPConnectorUDPOutputStream
     protected void sendToTarget(RawPacket packet, InetSocketAddress target)
         throws IOException
     {
+        if (packet.getRTCPPacketType() == 0 && packet.getLength() > 172) {
+            //DEVTE-1727 Media Server doesn't support header extensions - violating rfc5285
+            //so, this is to validate that the header extensions have been stripped before sending
+            //payload=160B, header=12B, headerExtension=8B
+            System.err.println("RTP header extension was not stripped: packet.sequenceNumber=" + packet.getSequenceNumber() + "packet.ssrc=" + packet.getSSRC() + "packet.length=" + packet.getLength());
+        }
         socket.send(
                 new DatagramPacket(
                         packet.getBuffer(),
