@@ -12,6 +12,8 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListSet;
@@ -24,12 +26,7 @@ public class RTPRecorder {
     private static final HashSet<String> FILE_APPEND_SET = new HashSet<>();
 
     private String recorderName;
-    private TreeSet<RawPacket> packets = new TreeSet<>(new Comparator<RawPacket>() {
-        @Override
-        public int compare(RawPacket o1, RawPacket o2) {
-            return o1.getSequenceNumber() - o2.getSequenceNumber();
-        }
-    });
+    private TreeMap<Integer, byte[]> packets = new TreeMap<>();
 
     private RTPRecorder(String recorderName) {
         this.recorderName = recorderName;
@@ -41,9 +38,7 @@ public class RTPRecorder {
         int to = rawPacket.getLength();
         byte[] copyOfRange = Arrays.copyOfRange(rawBuff, from, to);
 
-        RawPacket packetToRecord = new RawPacket(copyOfRange, 0, copyOfRange.length);
-        packetToRecord.setSequenceNumber(rawPacket.getSequenceNumber());
-        packets.add(packetToRecord);
+        packets.put(new Integer(rawPacket.getSequenceNumber()), copyOfRange);
     }
 
     public static synchronized void savePacket(DatagramPacket datagramPacketPacket, RawPacket[] rawPackets) {
@@ -75,11 +70,9 @@ public class RTPRecorder {
             String recordingFileName = System.getProperty("net.java.sip.communicator.impl.neomedia.audioSystem.recorder." + rtpRecorder.recorderName + ".fileName");
             final FileOutputStream fos = new FileOutputStream(recordingFileName, true);
 
-            Iterator<RawPacket> rawPacketIterator = rtpRecorder.packets.iterator();
-            while (rawPacketIterator.hasNext()) {
-                RawPacket rawPacket = rawPacketIterator.next();
+            for (Map.Entry<Integer, byte[]> packetEntry : rtpRecorder.packets.entrySet()) {
                 try {
-                    fos.write(rawPacket.getBuffer());
+                    fos.write(packetEntry.getValue());
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
